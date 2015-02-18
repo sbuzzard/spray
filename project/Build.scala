@@ -15,7 +15,7 @@ object Build extends Build {
   // -------------------------------------------------------------------------------------------------------------------
 
   lazy val root = Project("root",file("."))
-    .aggregate(examples, sprayCaching, sprayCan, sprayCanTests, sprayClient, sprayHttp, sprayHttpx,
+    .aggregate(docs, examples, sprayCaching, sprayCan, sprayCanTests, sprayClient, sprayHttp, sprayHttpx,
       sprayIO, sprayIOTests, sprayRouting, sprayRoutingShapeless2, sprayRoutingTests, sprayRoutingShapeless2Tests, sprayServlet, sprayTestKit, sprayUtil)
     .settings(basicSettings: _*)
     .settings(noPublishing: _*)
@@ -213,6 +213,11 @@ object Build extends Build {
     .settings(SphinxSupport.settings: _*)
     .settings(docsSettings: _*)
     .settings(libraryDependencies ++= test(akkaActor, sprayJson), addSpecs2("test")) // , json4sNative))
+    .settings(
+      libraryDependencies ++= {
+        if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil
+      }
+    )
 
 
   // -------------------------------------------------------------------------------------------------------------------
