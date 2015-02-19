@@ -141,6 +141,9 @@ object Build extends Build {
             val isExcluded = sourceWithShapeless2Changes(f.getName.toLowerCase)
             !(isExcluded && f.getAbsolutePath.contains("spray-routing/"))
           }
+        },
+        libraryDependencies ++= {
+          if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil
         }
       )
 
@@ -160,7 +163,10 @@ object Build extends Build {
       .dependsOn(sprayRoutingShapeless2)
       .settings(
         unmanagedResourceDirectories in Test <++= (unmanagedResourceDirectories in Test in sprayRoutingTests),
-        unmanagedSourceDirectories in Test <<= (unmanagedSourceDirectories in Test in sprayRoutingTests)
+        unmanagedSourceDirectories in Test <<= (unmanagedSourceDirectories in Test in sprayRoutingTests),
+        libraryDependencies ++= {
+          if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil
+        }
       )
 
   lazy val sprayServlet = Project("spray-servlet", file("spray-servlet"))
@@ -207,6 +213,11 @@ object Build extends Build {
     .settings(SphinxSupport.settings: _*)
     .settings(docsSettings: _*)
     .settings(libraryDependencies ++= test(akkaActor, sprayJson), addSpecs2("test")) // , json4sNative))
+    .settings(
+      libraryDependencies ++= {
+        if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil
+      }
+    )
 
 
   // -------------------------------------------------------------------------------------------------------------------
